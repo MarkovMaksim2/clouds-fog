@@ -1,0 +1,97 @@
+[
+    {
+        "id": "8ae155073c266ee1",
+        "type": "tab",
+        "label": "Fog Filter"
+    },
+    {
+        "id": "1b2c3d4e5f607182",
+        "type": "mqtt-broker",
+        "name": "Fog Broker",
+        "broker": "fog-broker",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true
+    },
+    {
+        "id": "6f708192a3b4c5d6",
+        "type": "mqtt-broker",
+        "name": "Cloud Broker",
+        "broker": "cloud-broker",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true
+    },
+    {
+        "id": "3c4d5e6f708192a3",
+        "type": "mqtt in",
+        "z": "8ae155073c266ee1",
+        "name": "Temperature In",
+        "topic": "factory/temperature",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "1b2c3d4e5f607182",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 180,
+        "y": 120,
+        "wires": [
+            [
+                "4d5e6f708192a3b4"
+            ]
+        ]
+    },
+    {
+        "id": "4d5e6f708192a3b4",
+        "type": "switch",
+        "z": "8ae155073c266ee1",
+        "name": "Temp > 80",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gt",
+                "v": "80",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 380,
+        "y": 120,
+        "wires": [
+            [
+                "5e6f708192a3b4c5"
+            ]
+        ]
+    },
+    {
+        "id": "5e6f708192a3b4c5",
+        "type": "mqtt out",
+        "z": "8ae155073c266ee1",
+        "name": "Alert Out",
+        "topic": "factory/alerts",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "6f708192a3b4c5d6",
+        "x": 560,
+        "y": 120,
+        "wires": []
+    }
+]

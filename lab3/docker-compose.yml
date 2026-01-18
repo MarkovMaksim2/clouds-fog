@@ -1,0 +1,53 @@
+version: "3.8"
+
+services:
+  fog-broker:
+    image: eclipse-mosquitto:2
+    container_name: fog-broker
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    networks:
+      - factory-net
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+
+  cloud-broker:
+    image: eclipse-mosquitto:2
+    container_name: cloud-broker
+    ports:
+      - "1884:1883"
+    networks:
+      - factory-net
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+
+  node-red:
+    image: nodered/node-red:latest
+    container_name: node-red
+    ports:
+      - "1880:1880"
+    environment:
+      - TZ=Europe/Amsterdam
+    volumes:
+      - ./nodered:/data/
+    networks:
+      - factory-net
+
+  sensor:
+    build:
+      context: ./sensor
+    container_name: sensor
+    environment:
+      - FOG_BROKER_HOST=fog-broker
+      - FOG_BROKER_PORT=1883
+      - TOPIC=factory/temperature
+      - SLEEP_SECONDS=1
+    depends_on:
+      - fog-broker
+    networks:
+      - factory-net
+
+networks:
+  factory-net:
+    name: factory-net
